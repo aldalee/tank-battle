@@ -8,7 +8,5 @@ package com.aleecoder;
  */
 public enum Direction {
     // 坦克方向
-
-    // TODO: STOP作为方向，不合适
-    LEFT, RIGHT, UP, DOWN, STOP
+    LEFT, RIGHT, UP, DOWN
 }

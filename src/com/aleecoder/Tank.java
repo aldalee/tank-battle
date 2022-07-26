@@ -14,7 +14,8 @@ public class Tank {
     private Direction dir;
     /** 坦克方向的标识 */
     private boolean bL, bR, bU, bD;
-
+    /** 坦克移动的标识*/
+    private boolean isMoving = false;
     public Tank(int x, int y, Direction dir) {
         this.x = x;
         this.y = y;
@@ -27,6 +28,9 @@ public class Tank {
     }
 
     private void move() {
+       if (!isMoving) {
+           return;
+       }
         switch (dir) {
             case LEFT:
                 x -= SPEED;
@@ -84,9 +88,8 @@ public class Tank {
     }
 
     private void setMainTankDir() {
-        if (!bL && !bR && !bU && !bD) {
-            dir = Direction.STOP;
-        }
+        // 当所有方向键被抬起时，坦克应停止；当任意方向键被按下时，坦克应在相应的方向运动
+        isMoving = bL || bR || bU || bD;
         if (bL && !bR && !bU && !bD) {
             dir = Direction.LEFT;
         }
