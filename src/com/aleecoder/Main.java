@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class Main {
     public static void main(String[] args) {
-        TankFrame tank = new TankFrame();
+        // 单例模式
+        TankFrame tank = TankFrame.INSTANCE;
         // 测试刷新
         for (;;){
             try {
