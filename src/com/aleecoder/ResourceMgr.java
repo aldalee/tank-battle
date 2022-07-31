@@ -16,6 +16,10 @@ public class ResourceMgr {
     public static BufferedImage badTankL, badTankU, badTankR, badTankD;
     public static BufferedImage bulletL, bulletU, bulletR, bulletD;
     public static BufferedImage[] explodes = new BufferedImage[SIZE];
+    public static final int TANK_WIDTH;
+    public static final int TANK_HEIGHT;
+    public static final int BULLET_WIDTH;
+    public static final int BULLET_HEIGHT;
 
     static {
         try {
@@ -41,5 +45,9 @@ public class ResourceMgr {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        TANK_WIDTH = goodTankD.getWidth();
+        TANK_HEIGHT = goodTankD.getHeight();
+        BULLET_WIDTH = bulletD.getWidth();
+        BULLET_HEIGHT = bulletD.getHeight();
     }
 }
