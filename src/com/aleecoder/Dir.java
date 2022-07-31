@@ -6,7 +6,7 @@ package com.aleecoder;
  * @author HuanyuLee
  * @date 2022/7/25
  */
-public enum Direction {
-    // 坦克方向
-    LEFT, RIGHT, UP, DOWN
+public enum Dir {
+    // 坦克方向 left right up down
+    L, R, U, D
 }
