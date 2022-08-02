@@ -56,6 +56,8 @@ public class Bullet {
     public void collideWithTank(Tank tank) {
         if (!tank.isLive())
             return;
+        if (this.group == tank.getGroup())
+            return;
         Rectangle rb = new Rectangle(this.x, this.y, ResourceMgr.BULLET_WIDTH, ResourceMgr.BULLET_HEIGHT);
         Rectangle rt = new Rectangle(tank.getX(), tank.getY(), ResourceMgr.TANK_WIDTH, ResourceMgr.TANK_HEIGHT);
         if (rb.intersects(rt)) {
@@ -68,7 +70,7 @@ public class Bullet {
      * 子弹边界检查
      */
     private void boundCheck() {
-        if (x < 0 || y < 30 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) {
+        if (x < 0 || y < 30 || x > TankFrame.INSTANCE.getGAME_WIDTH() || y > TankFrame.INSTANCE.getGAME_HEIGHT()) {
             this.setLive(false);
         }
     }
