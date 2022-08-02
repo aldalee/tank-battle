@@ -54,7 +54,8 @@ public class Bullet {
      * @param tank 坦克对象
      */
     public void collideWithTank(Tank tank) {
-        if (!tank.isLive())
+        // 一颗子弹只能打死一辆坦克
+        if (!this.isLive() || !tank.isLive())
             return;
         if (this.group == tank.getGroup())
             return;
