@@ -8,35 +8,15 @@ import java.awt.event.KeyEvent;
  * @author HuanyuLee
  * @date 2022/7/31
  */
-public class Player {
-    private int x, y;
-    private int oldX, oldY;
-    private static final int SPEED = 5;
-    private Dir dir;
-    private final Group group;
+public class Player extends Tank {
+    public boolean isMoving = false;
     private boolean bL, bR, bU, bD;
-    private boolean isMoving = false;
-    private boolean live = true;
-    public static int width = ResourceMgr.TANK_WIDTH;
-    public static int height = ResourceMgr.TANK_HEIGHT;
 
     public Player(int x, int y, Dir dir, Group group) {
-        this.x = x;
-        this.y = y;
-        this.dir = dir;
-        this.group = group;
-        this.oldX = x;
-        this.oldY = y;
+        super(x, y, dir, group);
     }
 
-    public boolean isLive() {
-        return live;
-    }
-
-    public void setLive(boolean live) {
-        this.live = live;
-    }
-
+    @Override
     public void paint(Graphics g) {
         if (!isLive())
             return;
@@ -49,32 +29,17 @@ public class Player {
         move();
     }
 
-    private void move() {
+    @Override
+    public void move() {
         if (!isMoving) {
             return;
         }
         oldX = x;
         oldY = y;
-        switch (dir) {
-            case L -> x -= SPEED;
-            case R -> x += SPEED;
-            case U -> y -= SPEED;
-            case D -> y += SPEED;
-        }
+        tankSpeed(dir);
         boundCheck();
     }
-    /**
-     * 坦克边界检查
-     */
-    private void boundCheck() {
-        if (x < 0 || y < 30 || x + width > TankFrame.INSTANCE.getGAME_WIDTH() || y + height > TankFrame.INSTANCE.getGAME_HEIGHT()) {
-            this.back();
-        }
-    }
-    private void back() {
-        this.x = oldX;
-        this.y = oldY;
-    }
+
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         switch (key) {
@@ -100,13 +65,6 @@ public class Player {
         setMainTankDir();
     }
 
-    private void fire() {
-        // 重新计算子弹发射的位置，在坦克中心打出
-        int bx = x + ResourceMgr.TANK_WIDTH / 2 - ResourceMgr.BULLET_WIDTH / 2;
-        int by = y + ResourceMgr.TANK_HEIGHT / 2 - ResourceMgr.BULLET_HEIGHT / 2;
-        TankFrame.INSTANCE.add(new Bullet(bx, by, dir, group));
-    }
-
     private void setMainTankDir() {
         // 当所有方向键被抬起时，坦克应停止；当任意方向键被按下时，坦克应在相应的方向运动
         isMoving = bL || bR || bU || bD;
@@ -123,9 +81,5 @@ public class Player {
             dir = Dir.D;
         }
         // 斜着走 类似
-    }
-
-    public void die() {
-        this.setLive(false);
     }
 }

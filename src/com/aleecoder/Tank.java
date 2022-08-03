@@ -4,19 +4,19 @@ import java.awt.*;
 import java.util.Random;
 
 /**
- * 敌军坦克类
+ * 坦克抽象父类
  * @author HuanyuLee
- * @date 2022/7/25
+ * @date 2022/8/2
  */
-public class Tank {
-    private int x, y;
-    private int oldX, oldY;
-    private static final int SPEED = 5;
-    private Dir dir;
-    private final Group group;
-    private boolean isMoving = true;
-    private boolean live = true;
-    private final Random r = new Random();
+public abstract class Tank {
+    public int x, y;
+    public int oldX, oldY;
+    public static final int SPEED = 5;
+    public Dir dir;
+    public Group group;
+    public boolean isMoving = true;
+    public boolean live = true;
+    public final Random r = new Random();
     public static int width = ResourceMgr.TANK_WIDTH;
     public static int height = ResourceMgr.TANK_HEIGHT;
 
@@ -33,19 +33,69 @@ public class Tank {
         return x;
     }
 
+    public void setX(int x) {
+        this.x = x;
+    }
+
     public int getY() {
         return y;
     }
 
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getOldX() {
+        return oldX;
+    }
+
+    public void setOldX(int oldX) {
+        this.oldX = oldX;
+    }
+
+    public int getOldY() {
+        return oldY;
+    }
+
+    public void setOldY(int oldY) {
+        this.oldY = oldY;
+    }
+
+    public static int getSPEED() {
+        return SPEED;
+    }
+
+    public Dir getDir() {
+        return dir;
+    }
+
     public void setDir(Dir dir) {
-        // 随机数 > 90 时才换方向
-        if (r.nextInt(100) > 90) {
-            this.dir = dir;
+        this.dir = dir;
+    }
+
+    public void tankSpeed(Dir dir) {
+        switch (dir) {
+            case L -> x -= SPEED;
+            case R -> x += SPEED;
+            case U -> y -= SPEED;
+            case D -> y += SPEED;
         }
     }
 
     public Group getGroup() {
         return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public boolean isMoving() {
+        return isMoving;
+    }
+
+    public void setMoving(boolean moving) {
+        isMoving = moving;
     }
 
     public boolean isLive() {
@@ -56,42 +106,34 @@ public class Tank {
         this.live = live;
     }
 
-    public void paint(Graphics g) {
-        if (!isLive())
-            return;
-        switch (dir) {
-            case L -> g.drawImage(ResourceMgr.badTankL, x, y, null);
-            case R -> g.drawImage(ResourceMgr.badTankR, x, y, null);
-            case U -> g.drawImage(ResourceMgr.badTankU, x, y, null);
-            case D -> g.drawImage(ResourceMgr.badTankD, x, y, null);
-        }
-        move();
+    public Random getR() {
+        return r;
     }
 
-    private void move() {
-        if (!isMoving) {
-            return;
-        }
-        oldX = x;
-        oldY = y;
-        // 设置敌军坦克随机运动的方向
-        setDir(Dir.randomDir());
-        // 随机数 > 90 才发射子弹
-        if (r.nextInt(100) > 90)
-            fire();
-        switch (dir) {
-            case L -> x -= SPEED;
-            case R -> x += SPEED;
-            case U -> y -= SPEED;
-            case D -> y += SPEED;
-        }
-        boundCheck();
+    public static int getWidth() {
+        return width;
     }
+
+    public static void setWidth(int width) {
+        Tank.width = width;
+    }
+
+    public static int getHeight() {
+        return height;
+    }
+
+    public static void setHeight(int height) {
+        Tank.height = height;
+    }
+
+    public abstract void paint(Graphics g);
+
+    public abstract void move();
 
     /**
      * 坦克边界检查
      */
-    private void boundCheck() {
+    public void boundCheck() {
         if (x < 0 || y < 30 || x + width > TankFrame.INSTANCE.getGAME_WIDTH() || y + height > TankFrame.INSTANCE.getGAME_HEIGHT()) {
             this.back();
         }
@@ -102,12 +144,13 @@ public class Tank {
         this.y = oldY;
     }
 
-    private void fire() {
+    public void fire() {
         // 重新计算子弹发射的位置，在坦克中心打出
-        int bx = x + width / 2 - ResourceMgr.BULLET_WIDTH / 2;
-        int by = y + height/ 2 - ResourceMgr.BULLET_HEIGHT / 2;
+        int bx = x + ResourceMgr.TANK_WIDTH / 2 - ResourceMgr.BULLET_WIDTH / 2;
+        int by = y + ResourceMgr.TANK_HEIGHT / 2 - ResourceMgr.BULLET_HEIGHT / 2;
         TankFrame.INSTANCE.add(new Bullet(bx, by, dir, group));
     }
+
 
     public void die() {
         this.setLive(false);

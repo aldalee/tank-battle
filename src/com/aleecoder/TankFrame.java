@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class TankFrame extends Frame {
     private Player tank;
-    private List<Tank> enemies;
+    private List<Enemy> enemies;
     private List<Bullet> bullets;
 
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -47,7 +47,7 @@ public class TankFrame extends Frame {
         bullets = new ArrayList<>();
         enemies = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            enemies.add(new Tank(GAME_WIDTH / 3 + ResourceMgr.TANK_WIDTH * i, 30, Dir.D, Group.BAD));
+            enemies.add(new Enemy(GAME_WIDTH / 3 + ResourceMgr.TANK_WIDTH * i, 30, Dir.D, Group.BAD));
         }
     }
 
@@ -63,9 +63,11 @@ public class TankFrame extends Frame {
         // 子弹生命检查
         bullets.removeIf(bullet -> !bullet.isLive());
         for (Bullet bullet : bullets) {
-            for (Tank enemy : enemies) {
+            for (Enemy enemy : enemies) {
                 bullet.collideWithTank(enemy);
             }
+            // 主战坦克 子弹碰撞
+            // bullet.collideWithTank(tank);
             bullet.paint(g);
         }
 
@@ -93,7 +95,7 @@ public class TankFrame extends Frame {
     public void initTank(Graphics g) {
         tank.paint(g);
         enemies.removeIf(enemy -> !enemy.isLive());
-        for (Tank enemy : enemies) {
+        for (Enemy enemy : enemies) {
             enemy.paint(g);
         }
     }
