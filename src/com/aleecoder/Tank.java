@@ -154,5 +154,6 @@ public abstract class Tank {
 
     public void die() {
         this.setLive(false);
+        TankFrame.INSTANCE.add(new Explode(x, y));
     }
 }
