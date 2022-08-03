@@ -14,9 +14,11 @@ import java.util.List;
  * @date 2022/7/18
  */
 public class TankFrame extends Frame {
-    private Player tank;
-    private List<Enemy> enemies;
+    public Player player;
+    public List<Enemy> enemies;
     private List<Bullet> bullets;
+    private List<Explode> explodes;
+    Image offScreenImage = null;
 
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public final int GAME_WIDTH = (int) screenSize.getWidth();
@@ -42,15 +44,6 @@ public class TankFrame extends Frame {
         initGameObjects();
     }
 
-    private void initGameObjects() {
-        tank = new Player(GAME_WIDTH / 2, GAME_HEIGHT - ResourceMgr.TANK_HEIGHT, Dir.U, Group.GOOD);
-        bullets = new ArrayList<>();
-        enemies = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            enemies.add(new Enemy(GAME_WIDTH / 3 + ResourceMgr.TANK_WIDTH * i, 30, Dir.D, Group.BAD));
-        }
-    }
-
     /**
      * 重写paint方法
      * 系统调用paint方法，并非自己调用
@@ -60,17 +53,33 @@ public class TankFrame extends Frame {
     public void paint(Graphics g) {
         initTank(g);
         setCount(g);
-        // 子弹生命检查
-        bullets.removeIf(bullet -> !bullet.isLive());
-        for (Bullet bullet : bullets) {
-            for (Enemy enemy : enemies) {
-                bullet.collideWithTank(enemy);
-            }
-            // 主战坦克 子弹碰撞
-            // bullet.collideWithTank(tank);
-            bullet.paint(g);
-        }
+        paintBullets(g);
+        paintExplodes(g);
+    }
 
+    /**
+     * 初始化游戏对象
+     */
+    private void initGameObjects() {
+        player = new Player(GAME_WIDTH / 2, GAME_HEIGHT - ResourceMgr.TANK_HEIGHT, Dir.U, Group.GOOD);
+        bullets = new ArrayList<>();
+        enemies = new ArrayList<>();
+        explodes = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            enemies.add(new Enemy(GAME_WIDTH / 3 + ResourceMgr.TANK_WIDTH * i, 30, Dir.D, Group.BAD));
+        }
+    }
+
+    /**
+     * paint初始化坦克
+     * @param g 系统画笔
+     */
+    public void initTank(Graphics g) {
+        player.paint(g);
+        enemies.removeIf(enemy -> !enemy.isLive());
+        for (Enemy enemy : enemies) {
+            enemy.paint(g);
+        }
     }
 
     /**
@@ -88,19 +97,49 @@ public class TankFrame extends Frame {
         g.setColor(color);
     }
 
-    /**
-     * paint初始化坦克
-     * @param g 系统画笔
-     */
-    public void initTank(Graphics g) {
-        tank.paint(g);
-        enemies.removeIf(enemy -> !enemy.isLive());
-        for (Enemy enemy : enemies) {
-            enemy.paint(g);
+    private void paintBullets(Graphics g) {
+        // 子弹生命检查
+        bullets.removeIf(bullet -> !bullet.isLive());
+        for (Bullet bullet : bullets) {
+            for (Enemy enemy : enemies) {
+                bullet.collideWithTank(enemy);
+            }
+            // 主战坦克 子弹碰撞
+            bullet.collideWithTank(player);
+            bullet.paint(g);
         }
     }
 
-    Image offScreenImage = null;
+    private void paintExplodes(Graphics g) {
+        explodes.removeIf(explode -> !explode.isLive());
+        for (Explode explode : explodes) {
+            explode.paint(g);
+        }
+    }
+
+    /**
+     * 添加子弹
+     * @param bullet 子弹对象
+     */
+    public void add(Bullet bullet) {
+        this.bullets.add(bullet);
+    }
+
+    /**
+     * 添加爆炸
+     * @param explode 爆炸对象
+     */
+    public void add(Explode explode) {
+        this.explodes.add(explode);
+    }
+
+    public int getGAME_WIDTH() {
+        return GAME_WIDTH;
+    }
+
+    public int getGAME_HEIGHT() {
+        return GAME_HEIGHT;
+    }
 
     /**
      * 双缓冲机制，消除坦克大战中景物的闪烁和白条
@@ -121,22 +160,6 @@ public class TankFrame extends Frame {
     }
 
     /**
-     * 添加子弹
-     * @param bullet 子弹对象
-     */
-    public void add(Bullet bullet) {
-        this.bullets.add(bullet);
-    }
-
-    public int getGAME_WIDTH() {
-        return GAME_WIDTH;
-    }
-
-    public int getGAME_HEIGHT() {
-        return GAME_HEIGHT;
-    }
-
-    /**
      * 为什么使用内部类？
      * 不需要让别的类访问键盘监听类
      * TODO: 高内聚、低耦合的程序设计原则
@@ -145,12 +168,12 @@ public class TankFrame extends Frame {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            tank.keyPressed(e);
+            player.keyPressed(e);
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-            tank.keyReleased(e);
+            player.keyReleased(e);
         }
     }
 }
