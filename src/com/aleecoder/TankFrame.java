@@ -26,6 +26,7 @@ public class TankFrame extends Frame {
     public static final TankFrame INSTANCE = new TankFrame();
 
     private TankFrame() {
+        initGameObjects();
         this.setTitle("tank-single");
         this.setLocation(0, 0);
         this.setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -41,20 +42,6 @@ public class TankFrame extends Frame {
         // TODO: 观察者 设计模式 Observer
         // 手动控制：响应键盘事件
         this.addKeyListener(new TankKeyListener());
-        initGameObjects();
-    }
-
-    /**
-     * 重写paint方法
-     * 系统调用paint方法，并非自己调用
-     * @param g 图形中系统传递的画笔
-     */
-    @Override
-    public void paint(Graphics g) {
-        initTank(g);
-        setCount(g);
-        paintBullets(g);
-        paintExplodes(g);
     }
 
     /**
@@ -68,6 +55,19 @@ public class TankFrame extends Frame {
         for (int i = 0; i < 10; i++) {
             enemies.add(new Enemy(GAME_WIDTH / 3 + ResourceMgr.TANK_WIDTH * i, 30, Dir.D, Group.BAD));
         }
+    }
+
+    /**
+     * 重写paint方法
+     * 系统调用paint方法，并非自己调用
+     * @param g 图形中系统传递的画笔
+     */
+    @Override
+    public void paint(Graphics g) {
+        initTank(g);
+        setCount(g);
+        paintBullets(g);
+        paintExplodes(g);
     }
 
     /**
