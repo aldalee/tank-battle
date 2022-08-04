@@ -1,4 +1,4 @@
-package com.aleecoder;
+package com.aleecoder.util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

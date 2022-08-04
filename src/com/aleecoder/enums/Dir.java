@@ -1,4 +1,4 @@
-package com.aleecoder;
+package com.aleecoder.enums;
 
 import java.util.Random;
 
@@ -15,7 +15,7 @@ public enum Dir {
 
     /**
      * 获取随机方向
-     * @return com.aleecoder.Dir
+     * @return com.aleecoder.enums.Dir
      */
     public static Dir randomDir() {
         return values()[RANDOM.nextInt(values().length)];

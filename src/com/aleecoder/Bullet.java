@@ -1,5 +1,10 @@
 package com.aleecoder;
 
+import com.aleecoder.enums.Dir;
+import com.aleecoder.enums.Group;
+import com.aleecoder.tank.Tank;
+import com.aleecoder.util.ResourceMgr;
+
 import java.awt.*;
 
 /**
@@ -9,7 +14,7 @@ import java.awt.*;
  */
 public class Bullet {
     private int x, y;
-    private Dir dir;
+    private final Dir dir;
     private final Group group;
     private boolean live = true;
     public static final int SPEED = 5;
@@ -22,7 +27,7 @@ public class Bullet {
     }
 
     public boolean isLive() {
-        return live;
+        return !live;
     }
 
     public void setLive(boolean live) {
@@ -55,7 +60,7 @@ public class Bullet {
      */
     public void collideWithTank(Tank tank) {
         // 一颗子弹只能打死一辆坦克
-        if (!this.isLive() || !tank.isLive())
+        if (this.isLive() || tank.isLive())
             return;
         if (this.group == tank.getGroup())
             return;

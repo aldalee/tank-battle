@@ -1,4 +1,8 @@
-package com.aleecoder;
+package com.aleecoder.tank;
+
+import com.aleecoder.enums.Dir;
+import com.aleecoder.enums.Group;
+import com.aleecoder.util.ResourceMgr;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -18,7 +22,7 @@ public class Player extends Tank {
 
     @Override
     public void paint(Graphics g) {
-        if (!isLive())
+        if (isLive())
             return;
         switch (dir) {
             case L -> g.drawImage(ResourceMgr.goodTankL, x, y, null);

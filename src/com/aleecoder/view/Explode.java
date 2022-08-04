@@ -1,4 +1,6 @@
-package com.aleecoder;
+package com.aleecoder.view;
+
+import com.aleecoder.util.ResourceMgr;
 
 import java.awt.*;
 
@@ -8,7 +10,8 @@ import java.awt.*;
  * @date 2022/8/3
  */
 public class Explode {
-    private int x, y;
+    private final int x;
+    private final int y;
     private int width, height;
     private int step = 0;
     private boolean live = true;
@@ -18,6 +21,8 @@ public class Explode {
         this.y = y;
         this.width = ResourceMgr.explodes[0].getWidth();
         this.height = ResourceMgr.explodes[0].getHeight();
+        // 爆炸声音
+        new Thread(()-> new Audio("audio/explode.wav").play()).start();
     }
 
     public boolean isLive() {

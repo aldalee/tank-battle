@@ -1,5 +1,13 @@
 package com.aleecoder;
 
+import com.aleecoder.enums.Dir;
+import com.aleecoder.tank.Enemy;
+import com.aleecoder.enums.Group;
+import com.aleecoder.tank.Player;
+import com.aleecoder.tank.Tank;
+import com.aleecoder.view.Explode;
+import com.aleecoder.util.ResourceMgr;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -19,7 +27,6 @@ public class TankFrame extends Frame {
     private List<Bullet> bullets;
     private List<Explode> explodes;
     Image offScreenImage = null;
-
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public final int GAME_WIDTH = (int) screenSize.getWidth();
     public final int GAME_HEIGHT = (int) screenSize.getHeight();
@@ -76,7 +83,7 @@ public class TankFrame extends Frame {
      */
     public void initTank(Graphics g) {
         player.paint(g);
-        enemies.removeIf(enemy -> !enemy.isLive());
+        enemies.removeIf(Tank::isLive);
         for (Enemy enemy : enemies) {
             enemy.paint(g);
         }
@@ -99,7 +106,7 @@ public class TankFrame extends Frame {
 
     private void paintBullets(Graphics g) {
         // 子弹生命检查
-        bullets.removeIf(bullet -> !bullet.isLive());
+        bullets.removeIf(Bullet::isLive);
         for (Bullet bullet : bullets) {
             for (Enemy enemy : enemies) {
                 bullet.collideWithTank(enemy);

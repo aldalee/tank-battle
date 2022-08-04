@@ -1,4 +1,10 @@
-package com.aleecoder;
+package com.aleecoder.tank;
+
+import com.aleecoder.*;
+import com.aleecoder.enums.Dir;
+import com.aleecoder.enums.Group;
+import com.aleecoder.view.Explode;
+import com.aleecoder.util.ResourceMgr;
 
 import java.awt.*;
 import java.util.Random;
@@ -16,7 +22,7 @@ public abstract class Tank {
     public Group group;
     public boolean isMoving = true;
     public boolean live = true;
-    public final Random r = new Random();
+    public final Random R = new Random();
     public static int width = ResourceMgr.TANK_WIDTH;
     public static int height = ResourceMgr.TANK_HEIGHT;
 
@@ -99,7 +105,7 @@ public abstract class Tank {
     }
 
     public boolean isLive() {
-        return live;
+        return !live;
     }
 
     public void setLive(boolean live) {
@@ -107,7 +113,7 @@ public abstract class Tank {
     }
 
     public Random getR() {
-        return r;
+        return R;
     }
 
     public static int getWidth() {
@@ -146,8 +152,8 @@ public abstract class Tank {
 
     public void fire() {
         // 重新计算子弹发射的位置，在坦克中心打出
-        int bx = x + ResourceMgr.TANK_WIDTH / 2 - ResourceMgr.BULLET_WIDTH / 2;
-        int by = y + ResourceMgr.TANK_HEIGHT / 2 - ResourceMgr.BULLET_HEIGHT / 2;
+        int bx = x + width / 2 - ResourceMgr.BULLET_WIDTH / 2;
+        int by = y + height / 2 - ResourceMgr.BULLET_HEIGHT / 2;
         TankFrame.INSTANCE.add(new Bullet(bx, by, dir, group));
     }
 

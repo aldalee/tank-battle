@@ -1,4 +1,4 @@
-package com.aleecoder;
+package com.aleecoder.enums;
 
 /**
  * 分组，区分敌我坦克
