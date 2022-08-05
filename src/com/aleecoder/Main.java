@@ -9,16 +9,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class Main {
     public static void main(String[] args) {
-        // 单例模式
-        TankFrame tank = TankFrame.INSTANCE;
-        // 测试刷新
+        // 刷新
         for (; ; ) {
             try {
                 TimeUnit.MICROSECONDS.sleep(25000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            tank.repaint();
+            TankFrame.getInstance().repaint();
         }
     }
 

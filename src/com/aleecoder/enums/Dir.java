@@ -9,15 +9,15 @@ import java.util.Random;
  * @date 2022/7/25
  */
 public enum Dir {
-    // 坦克方向 left right up down
+    /**
+     * 坦克方向 left right up down
+     */
     L, R, U, D;
-    private static final Random RANDOM = new Random();
-
     /**
      * 获取随机方向
      * @return com.aleecoder.enums.Dir
      */
     public static Dir randomDir() {
-        return values()[RANDOM.nextInt(values().length)];
+        return values()[new Random().nextInt(values().length)];
     }
 }

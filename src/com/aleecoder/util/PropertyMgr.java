@@ -18,7 +18,7 @@ public class PropertyMgr {
             e.printStackTrace();
         }
     }
-    public static String get(String key) {
-        return (String) PROPS.get(key);
+    public static Integer get(String key) {
+        return Integer.parseInt((String) PROPS.get(key));
     }
 }

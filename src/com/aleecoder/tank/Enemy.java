@@ -12,7 +12,7 @@ import java.util.Random;
  * @author HuanyuLee
  * @date 2022/7/25
  */
-public class Enemy extends Tank {
+public class Enemy extends AbstractTank {
     private final Random r = new Random();
 
     public Enemy(int x, int y, Dir dir, Group group) {
@@ -43,7 +43,7 @@ public class Enemy extends Tank {
 
     @Override
     public void move() {
-        if (!isMoving) {
+        if (!move) {
             return;
         }
         oldX = x;
@@ -54,7 +54,7 @@ public class Enemy extends Tank {
         if (r.nextInt(100) > 90) {
             fire();
         }
-        tankSpeed(dir);
+        tankSpeed(dir,SPEED);
         boundCheck();
     }
 }

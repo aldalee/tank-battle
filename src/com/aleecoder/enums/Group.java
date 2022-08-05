@@ -6,6 +6,8 @@ package com.aleecoder.enums;
  * @date 2022/7/27
  */
 public enum Group {
-    // 坦克分组 good（主坦克） bad（敌人）
+    /**
+     * 坦克分组 good（主坦克） bad（敌人）
+     */
     GOOD, BAD
 }

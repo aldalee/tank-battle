@@ -1,2 +1,6 @@
 # 坦克的数量
 initTankCount=5
+# 玩家坦克移动速度,默认为5
+PLAYER_SPEED=10
+# 子弹的运动速度，默认为6
+BULLET_SPEED=6

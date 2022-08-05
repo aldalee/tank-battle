@@ -4,6 +4,7 @@ import com.aleecoder.enums.Dir;
 import com.aleecoder.enums.Group;
 import com.aleecoder.tank.Enemy;
 import com.aleecoder.tank.Player;
+import com.aleecoder.util.PropertyMgr;
 import com.aleecoder.util.ResourceMgr;
 import com.aleecoder.view.Audio;
 import com.aleecoder.view.Explode;
@@ -22,15 +23,35 @@ import java.util.List;
  * @date 2022/7/18
  */
 public class TankFrame extends Frame {
-    public Player player;
-    public List<Enemy> enemies;
+    /**
+     * 游戏对象
+     */
+    private Player player;
+    private List<Enemy> enemies;
     private List<Bullet> bullets;
     private List<Explode> explodes;
-    Image offScreenImage = null;
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    /**
+     * 游戏屏幕大小
+     */
+    private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public final int GAME_WIDTH = (int) screenSize.getWidth();
     public final int GAME_HEIGHT = (int) screenSize.getHeight();
-    public static final TankFrame INSTANCE = new TankFrame();
+    /**
+     * TankFrame单例对象
+     */
+    private static final TankFrame INSTANCE = new TankFrame();
+    /**
+     * 配置文件信息
+     */
+    private final int TANK_COUNT = PropertyMgr.get("initTankCount");
+
+    /**
+     * 获取TankFrame的对象实例
+     * @return com.aleecoder.TankFrame
+     */
+    public static TankFrame getInstance() {
+        return INSTANCE;
+    }
 
     private TankFrame() {
         initGameObjects();
@@ -57,12 +78,16 @@ public class TankFrame extends Frame {
      * 初始化游戏对象
      */
     private void initGameObjects() {
-        player = new Player(GAME_WIDTH / 2, GAME_HEIGHT - ResourceMgr.TANK_HEIGHT, Dir.U, Group.GOOD);
+        final int TANK_HEIGHT = ResourceMgr.TANK_HEIGHT;
+        final int TANK_WIDTH = ResourceMgr.TANK_WIDTH;
+        // 主战坦克在屏幕最下方中心位置显示
+        player = new Player(GAME_WIDTH / 2, GAME_HEIGHT - TANK_HEIGHT, Dir.U, Group.GOOD);
         bullets = new ArrayList<>();
         enemies = new ArrayList<>();
         explodes = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            enemies.add(new Enemy(GAME_WIDTH / 3 + ResourceMgr.TANK_WIDTH * i, 30, Dir.D, Group.BAD));
+        for (int i = 0; i < TANK_COUNT; i++) {
+            // 敌军坦克在屏幕最上方中心位置显示一排
+            enemies.add(new Enemy(GAME_WIDTH / 3 + TANK_WIDTH * i, 30, Dir.D, Group.BAD));
         }
     }
 
@@ -142,13 +167,7 @@ public class TankFrame extends Frame {
         this.explodes.add(explode);
     }
 
-    public int getGAME_WIDTH() {
-        return GAME_WIDTH;
-    }
-
-    public int getGAME_HEIGHT() {
-        return GAME_HEIGHT;
-    }
+    Image offScreenImage = null;
 
     /**
      * 双缓冲机制，消除坦克大战中景物的闪烁和白条

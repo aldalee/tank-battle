@@ -2,6 +2,7 @@ package com.aleecoder.tank;
 
 import com.aleecoder.enums.Dir;
 import com.aleecoder.enums.Group;
+import com.aleecoder.util.PropertyMgr;
 import com.aleecoder.util.ResourceMgr;
 import com.aleecoder.view.Audio;
 
@@ -13,9 +14,10 @@ import java.awt.event.KeyEvent;
  * @author HuanyuLee
  * @date 2022/7/31
  */
-public class Player extends Tank {
+public class Player extends AbstractTank {
     public boolean isMoving = false;
     private boolean bL, bR, bU, bD;
+    private final int PLAYER_SPEED = PropertyMgr.get("PLAYER_SPEED");
 
     public Player(int x, int y, Dir dir, Group group) {
         super(x, y, dir, group);
@@ -42,7 +44,7 @@ public class Player extends Tank {
         }
         oldX = x;
         oldY = y;
-        tankSpeed(dir);
+        tankSpeed(dir,PLAYER_SPEED);
         boundCheck();
         if(this.group == Group.GOOD) {
             new Thread(()->new Audio("audio/tank_move.wav").play()).start();

@@ -2,7 +2,8 @@ package com.aleecoder;
 
 import com.aleecoder.enums.Dir;
 import com.aleecoder.enums.Group;
-import com.aleecoder.tank.Tank;
+import com.aleecoder.tank.AbstractTank;
+import com.aleecoder.util.PropertyMgr;
 import com.aleecoder.util.ResourceMgr;
 
 import java.awt.*;
@@ -17,7 +18,7 @@ public class Bullet {
     private final Dir dir;
     private final Group group;
     private boolean live = true;
-    public static final int SPEED = 5;
+    private static final int BULLET_SPEED = PropertyMgr.get("BULLET_SPEED");
 
     public Bullet(int x, int y, Dir dir, Group group) {
         this.x = x;
@@ -46,10 +47,10 @@ public class Bullet {
 
     private void move() {
         switch (dir) {
-            case L -> x -= SPEED;
-            case R -> x += SPEED;
-            case U -> y -= SPEED;
-            case D -> y += SPEED;
+            case L -> x -= BULLET_SPEED;
+            case R -> x += BULLET_SPEED;
+            case U -> y -= BULLET_SPEED;
+            case D -> y += BULLET_SPEED;
         }
         boundCheck();
     }
@@ -58,7 +59,7 @@ public class Bullet {
      * 子弹和坦克的碰撞检测
      * @param tank 坦克对象
      */
-    public void collideWithTank(Tank tank) {
+    public void collideWithTank(AbstractTank tank) {
         // 一颗子弹只能打死一辆坦克
         if (!this.isLive() || !tank.isLive()) {
             return;
@@ -67,7 +68,7 @@ public class Bullet {
             return;
         }
         Rectangle rb = new Rectangle(this.x, this.y, ResourceMgr.BULLET_WIDTH, ResourceMgr.BULLET_HEIGHT);
-        Rectangle rt = new Rectangle(tank.getX(), tank.getY(), ResourceMgr.TANK_WIDTH, ResourceMgr.TANK_HEIGHT);
+        Rectangle rt = new Rectangle(tank.x, tank.y, ResourceMgr.TANK_WIDTH, ResourceMgr.TANK_HEIGHT);
         if (rb.intersects(rt)) {
             this.die();
             tank.die();
@@ -78,7 +79,10 @@ public class Bullet {
      * 子弹边界检查
      */
     private void boundCheck() {
-        if (x < 0 || y < 30 || x > TankFrame.INSTANCE.getGAME_WIDTH() || y > TankFrame.INSTANCE.getGAME_HEIGHT()) {
+        int screen_width = TankFrame.getInstance().GAME_WIDTH;
+        int screen_height = TankFrame.getInstance().GAME_HEIGHT;
+        int menu_height = 30;
+        if (x < 0 || y < menu_height || x > screen_width || y > screen_height) {
             this.setLive(false);
         }
     }
