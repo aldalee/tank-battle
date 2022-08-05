@@ -1,10 +1,12 @@
 package com.aleecoder.tank;
 
-import com.aleecoder.*;
+import com.aleecoder.Bullet;
+import com.aleecoder.TankFrame;
 import com.aleecoder.enums.Dir;
 import com.aleecoder.enums.Group;
-import com.aleecoder.view.Explode;
 import com.aleecoder.util.ResourceMgr;
+import com.aleecoder.view.Audio;
+import com.aleecoder.view.Explode;
 
 import java.awt.*;
 import java.util.Random;
@@ -105,7 +107,7 @@ public abstract class Tank {
     }
 
     public boolean isLive() {
-        return !live;
+        return live;
     }
 
     public void setLive(boolean live) {
@@ -155,6 +157,9 @@ public abstract class Tank {
         int bx = x + width / 2 - ResourceMgr.BULLET_WIDTH / 2;
         int by = y + height / 2 - ResourceMgr.BULLET_HEIGHT / 2;
         TankFrame.INSTANCE.add(new Bullet(bx, by, dir, group));
+        if(this.group == Group.GOOD) {
+            new Thread(()->new Audio("audio/tank_fire.wav").play()).start();
+        }
     }
 
 

@@ -1,12 +1,12 @@
 package com.aleecoder;
 
 import com.aleecoder.enums.Dir;
-import com.aleecoder.tank.Enemy;
 import com.aleecoder.enums.Group;
+import com.aleecoder.tank.Enemy;
 import com.aleecoder.tank.Player;
-import com.aleecoder.tank.Tank;
-import com.aleecoder.view.Explode;
 import com.aleecoder.util.ResourceMgr;
+import com.aleecoder.view.Audio;
+import com.aleecoder.view.Explode;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -49,6 +49,8 @@ public class TankFrame extends Frame {
         // TODO: 观察者 设计模式 Observer
         // 手动控制：响应键盘事件
         this.addKeyListener(new TankKeyListener());
+        // bgm
+        new Thread(() -> new Audio("audio/bgm.wav").loop()).start();
     }
 
     /**
@@ -83,7 +85,7 @@ public class TankFrame extends Frame {
      */
     public void initTank(Graphics g) {
         player.paint(g);
-        enemies.removeIf(Tank::isLive);
+        enemies.removeIf(enemy -> !enemy.isLive());
         for (Enemy enemy : enemies) {
             enemy.paint(g);
         }
@@ -106,7 +108,7 @@ public class TankFrame extends Frame {
 
     private void paintBullets(Graphics g) {
         // 子弹生命检查
-        bullets.removeIf(Bullet::isLive);
+        bullets.removeIf(bullet -> !bullet.isLive());
         for (Bullet bullet : bullets) {
             for (Enemy enemy : enemies) {
                 bullet.collideWithTank(enemy);

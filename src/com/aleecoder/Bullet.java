@@ -27,7 +27,7 @@ public class Bullet {
     }
 
     public boolean isLive() {
-        return !live;
+        return live;
     }
 
     public void setLive(boolean live) {
@@ -60,10 +60,12 @@ public class Bullet {
      */
     public void collideWithTank(Tank tank) {
         // 一颗子弹只能打死一辆坦克
-        if (this.isLive() || tank.isLive())
+        if (!this.isLive() || !tank.isLive()) {
             return;
-        if (this.group == tank.getGroup())
+        }
+        if (this.group == tank.getGroup()) {
             return;
+        }
         Rectangle rb = new Rectangle(this.x, this.y, ResourceMgr.BULLET_WIDTH, ResourceMgr.BULLET_HEIGHT);
         Rectangle rt = new Rectangle(tank.getX(), tank.getY(), ResourceMgr.TANK_WIDTH, ResourceMgr.TANK_HEIGHT);
         if (rb.intersects(rt)) {

@@ -3,6 +3,7 @@ package com.aleecoder.tank;
 import com.aleecoder.enums.Dir;
 import com.aleecoder.enums.Group;
 import com.aleecoder.util.ResourceMgr;
+import com.aleecoder.view.Audio;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -22,8 +23,9 @@ public class Player extends Tank {
 
     @Override
     public void paint(Graphics g) {
-        if (isLive())
+        if (!isLive()) {
             return;
+        }
         switch (dir) {
             case L -> g.drawImage(ResourceMgr.goodTankL, x, y, null);
             case R -> g.drawImage(ResourceMgr.goodTankR, x, y, null);
@@ -42,6 +44,9 @@ public class Player extends Tank {
         oldY = y;
         tankSpeed(dir);
         boundCheck();
+        if(this.group == Group.GOOD) {
+            new Thread(()->new Audio("audio/tank_move.wav").play()).start();
+        }
     }
 
     public void keyPressed(KeyEvent e) {

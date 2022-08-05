@@ -29,8 +29,9 @@ public class Enemy extends Tank {
 
     @Override
     public void paint(Graphics g) {
-        if (isLive())
+        if (!isLive()) {
             return;
+        }
         switch (dir) {
             case L -> g.drawImage(ResourceMgr.badTankL, x, y, null);
             case R -> g.drawImage(ResourceMgr.badTankR, x, y, null);
@@ -50,8 +51,9 @@ public class Enemy extends Tank {
         // 设置敌军坦克随机运动的方向
         setDir(Dir.randomDir());
         // 随机数 > 90 才发射子弹
-        if (r.nextInt(100) > 90)
+        if (r.nextInt(100) > 90) {
             fire();
+        }
         tankSpeed(dir);
         boundCheck();
     }
