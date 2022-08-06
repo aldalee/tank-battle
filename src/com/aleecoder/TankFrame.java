@@ -1,5 +1,6 @@
 package com.aleecoder;
 
+import com.aleecoder.bullet.Bullet;
 import com.aleecoder.enums.Dir;
 import com.aleecoder.enums.Group;
 import com.aleecoder.tank.Enemy;
@@ -43,7 +44,7 @@ public class TankFrame extends Frame {
     /**
      * 配置文件信息
      */
-    private final int TANK_COUNT = PropertyMgr.get("initTankCount");
+    private final int TANK_COUNT = Integer.parseInt(PropertyMgr.get("initTankCount"));
 
     /**
      * 获取TankFrame的对象实例
@@ -70,8 +71,7 @@ public class TankFrame extends Frame {
         // TODO: 观察者 设计模式 Observer
         // 手动控制：响应键盘事件
         this.addKeyListener(new TankKeyListener());
-        // bgm
-        new Thread(() -> new Audio("audio/bgm.wav").loop()).start();
+        Audio.bgm();
     }
 
     /**
