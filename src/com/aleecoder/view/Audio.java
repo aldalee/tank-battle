@@ -1,7 +1,7 @@
 package com.aleecoder.view;
 
 import com.aleecoder.enums.Group;
-import com.aleecoder.tank.AbstractTank;
+import com.aleecoder.objects.tank.Player;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -24,8 +24,6 @@ public class Audio {
             audioFormat = audioInputStream.getFormat();
             DataLine.Info dataLine_info = new DataLine.Info(SourceDataLine.class, audioFormat);
             sourceDataLine = (SourceDataLine) AudioSystem.getLine(dataLine_info);
-            //FloatControl volctrl=(FloatControl)sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN);
-            //volctrl.setValue(-40);//
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -35,8 +33,8 @@ public class Audio {
      * 坦克移动的声音特效
      * @param tank 坦克对象
      */
-    public static void tankMove(AbstractTank tank) {
-        if (tank.group == Group.GOOD) {
+    public static void tankMove(Player tank) {
+        if (tank.getGroup() == Group.GOOD) {
             new Thread(() -> new Audio("audio/tank_move.wav").play()).start();
         }
     }
@@ -45,8 +43,8 @@ public class Audio {
      * 坦克开火的声音特效
      * @param tank 坦克对象
      */
-    public static void tankFire(AbstractTank tank) {
-        if (tank.group == Group.GOOD) {
+    public static void tankFire(Player tank) {
+        if (tank.getGroup() == Group.GOOD) {
             new Thread(() -> new Audio("audio/tank_fire.wav").play()).start();
         }
     }
@@ -70,7 +68,6 @@ public class Audio {
                 int len;
                 sourceDataLine.open(audioFormat, 1024 * 1024 * 15);
                 sourceDataLine.start();
-                //System.out.println(audioInputStream.markSupported());
                 audioInputStream.mark(12358946);
                 while ((len = audioInputStream.read(b)) > 0) {
                     sourceDataLine.write(b, 0, len);
@@ -90,12 +87,10 @@ public class Audio {
             int len;
             sourceDataLine.open(audioFormat, 1024 * 5);
             sourceDataLine.start();
-            //System.out.println(audioInputStream.markSupported());
             audioInputStream.mark(12358946);
             while ((len = audioInputStream.read(b)) > 0) {
                 sourceDataLine.write(b, 0, len);
             }
-            // audioInputStream.reset();
             sourceDataLine.drain();
             sourceDataLine.close();
         } catch (Exception e) {
