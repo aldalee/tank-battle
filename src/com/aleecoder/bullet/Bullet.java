@@ -1,5 +1,6 @@
-package com.aleecoder;
+package com.aleecoder.bullet;
 
+import com.aleecoder.TankFrame;
 import com.aleecoder.enums.Dir;
 import com.aleecoder.enums.Group;
 import com.aleecoder.tank.AbstractTank;
@@ -18,7 +19,7 @@ public class Bullet {
     private final Dir dir;
     private final Group group;
     private boolean live = true;
-    private static final int BULLET_SPEED = PropertyMgr.get("BULLET_SPEED");
+    private static final int BULLET_SPEED = Integer.parseInt(PropertyMgr.get("BULLET_SPEED"));
 
     public Bullet(int x, int y, Dir dir, Group group) {
         this.x = x;
