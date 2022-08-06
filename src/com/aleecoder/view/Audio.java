@@ -1,5 +1,8 @@
 package com.aleecoder.view;
 
+import com.aleecoder.enums.Group;
+import com.aleecoder.tank.AbstractTank;
+
 import javax.sound.sampled.*;
 import java.io.IOException;
 import java.util.Objects;
@@ -26,6 +29,39 @@ public class Audio {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 坦克移动的声音特效
+     * @param tank 坦克对象
+     */
+    public static void tankMove(AbstractTank tank) {
+        if (tank.group == Group.GOOD) {
+            new Thread(() -> new Audio("audio/tank_move.wav").play()).start();
+        }
+    }
+
+    /**
+     * 坦克开火的声音特效
+     * @param tank 坦克对象
+     */
+    public static void tankFire(AbstractTank tank) {
+        if (tank.group == Group.GOOD) {
+            new Thread(() -> new Audio("audio/tank_fire.wav").play()).start();
+        }
+    }
+
+    /**
+     * 背景音乐的声音特效
+     */
+    public static void bgm() {
+        new Thread(() -> new Audio("audio/bgm.wav").loop()).start();
+    }
+    /**
+     * 坦克爆炸的声音特效
+     */
+    public static void explode() {
+        new Thread(()-> new Audio("audio/explode.wav").play()).start();
     }
 
     public void loop() {
