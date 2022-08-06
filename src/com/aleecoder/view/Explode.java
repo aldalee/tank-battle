@@ -21,8 +21,7 @@ public class Explode {
         this.y = y;
         this.width = ResourceMgr.explodes[0].getWidth();
         this.height = ResourceMgr.explodes[0].getHeight();
-        // 爆炸声音
-        new Thread(()-> new Audio("audio/explode.wav").play()).start();
+        Audio.explode();
     }
 
     public boolean isLive() {
