@@ -10,6 +10,7 @@ import java.util.Properties;
  */
 public class PropertyMgr {
     private static final Properties PROPS;
+
     static {
         PROPS = new Properties();
         try {
@@ -18,7 +19,13 @@ public class PropertyMgr {
             e.printStackTrace();
         }
     }
-    public static Integer get(String key) {
-        return Integer.parseInt((String) PROPS.get(key));
+
+    /**
+     * 根据key获取配置文件相应的value
+     * @param key 配置文件的key
+     * @return java.lang.String
+     */
+    public static String get(String key) {
+        return (String) PROPS.get(key);
     }
 }
