@@ -1,14 +1,14 @@
-package com.aleecoder;
+package com.aleecoder.view;
 
-import com.aleecoder.bullet.Bullet;
+import com.aleecoder.chain.ColliderChain;
 import com.aleecoder.enums.Dir;
 import com.aleecoder.enums.Group;
-import com.aleecoder.tank.Enemy;
-import com.aleecoder.tank.Player;
+import com.aleecoder.objects.AbstractGameObject;
+import com.aleecoder.objects.Wall;
+import com.aleecoder.objects.tank.Enemy;
+import com.aleecoder.objects.tank.Player;
 import com.aleecoder.util.PropertyMgr;
 import com.aleecoder.util.ResourceMgr;
-import com.aleecoder.view.Audio;
-import com.aleecoder.view.Explode;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -28,9 +28,11 @@ public class TankFrame extends Frame {
      * 游戏对象
      */
     private Player player;
-    private List<Enemy> enemies;
-    private List<Bullet> bullets;
-    private List<Explode> explodes;
+    private List<AbstractGameObject> objects;
+    /**
+     * 碰撞规则 责任链模式
+     */
+    ColliderChain colliderChain = new ColliderChain();
     /**
      * 游戏屏幕大小
      */
@@ -48,7 +50,7 @@ public class TankFrame extends Frame {
 
     /**
      * 获取TankFrame的对象实例
-     * @return com.aleecoder.TankFrame
+     * @return com.aleecoder.view.TankFrame
      */
     public static TankFrame getInstance() {
         return INSTANCE;
@@ -56,6 +58,30 @@ public class TankFrame extends Frame {
 
     private TankFrame() {
         initGameObjects();
+        initFrame();
+    }
+
+    /**
+     * 初始化游戏对象
+     */
+    private void initGameObjects() {
+        final int TANK_HEIGHT = ResourceMgr.TANK_HEIGHT;
+        final int TANK_WIDTH = ResourceMgr.TANK_WIDTH;
+        objects = new ArrayList<>();
+        // 主战坦克在屏幕最下方中心位置显示
+        player = new Player(GAME_WIDTH / 2, GAME_HEIGHT - TANK_HEIGHT, Dir.U, Group.GOOD);
+        // 敌军坦克在屏幕最上方中心位置显示一排
+        for (int i = 0; i < TANK_COUNT; i++) {
+            this.add(new Enemy(GAME_WIDTH / 3 + TANK_WIDTH * i, 30, Dir.D, Group.BAD));
+        }
+        // 添加一面墙
+        this.add(new Wall(300, 200, 200, 100));
+    }
+
+    /**
+     * 初始化游戏的Frame
+     */
+    private void initFrame() {
         this.setTitle("tank-single");
         this.setLocation(0, 0);
         this.setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -71,24 +97,17 @@ public class TankFrame extends Frame {
         // TODO: 观察者 设计模式 Observer
         // 手动控制：响应键盘事件
         this.addKeyListener(new TankKeyListener());
-        Audio.bgm();
+        if (player.isLive()) {
+            Audio.bgm();
+        }
     }
 
     /**
-     * 初始化游戏对象
+     * 添加游戏物体到屏幕
+     * @param gameObject 游戏物体
      */
-    private void initGameObjects() {
-        final int TANK_HEIGHT = ResourceMgr.TANK_HEIGHT;
-        final int TANK_WIDTH = ResourceMgr.TANK_WIDTH;
-        // 主战坦克在屏幕最下方中心位置显示
-        player = new Player(GAME_WIDTH / 2, GAME_HEIGHT - TANK_HEIGHT, Dir.U, Group.GOOD);
-        bullets = new ArrayList<>();
-        enemies = new ArrayList<>();
-        explodes = new ArrayList<>();
-        for (int i = 0; i < TANK_COUNT; i++) {
-            // 敌军坦克在屏幕最上方中心位置显示一排
-            enemies.add(new Enemy(GAME_WIDTH / 3 + TANK_WIDTH * i, 30, Dir.D, Group.BAD));
-        }
+    public void add(AbstractGameObject gameObject) {
+        objects.add(gameObject);
     }
 
     /**
@@ -98,22 +117,26 @@ public class TankFrame extends Frame {
      */
     @Override
     public void paint(Graphics g) {
-        initTank(g);
-        setCount(g);
-        paintBullets(g);
-        paintExplodes(g);
-    }
-
-    /**
-     * paint初始化坦克
-     * @param g 系统画笔
-     */
-    public void initTank(Graphics g) {
         player.paint(g);
-        enemies.removeIf(enemy -> !enemy.isLive());
-        for (Enemy enemy : enemies) {
-            enemy.paint(g);
+        setCount(g);
+        // 碰撞检测
+        // 任意两个游戏物体的碰撞规则是不确定的，而且又要考虑扩展性，因此抽象出来
+        for (int i = 0; i < objects.size(); i++) {
+            if (!objects.get(i).isLive()) {
+                objects.remove(i);
+                break;
+            }
+            AbstractGameObject o1 = objects.get(i);
+            for (int j = 0; j < objects.size(); j++) {
+                AbstractGameObject o2 = objects.get(j);
+                colliderChain.collide(o1, o2);
+            }
+            if (objects.get(i).isLive()) {
+                objects.get(i).paint(g);
+            }
         }
+        // Exception in thread "AWT-EventQueue-0" java.util.ConcurrentModificationException
+        // 如果采用foreach 会出此异常
     }
 
     /**
@@ -125,46 +148,11 @@ public class TankFrame extends Frame {
         Color color = g.getColor();
         g.setColor(Color.WHITE);
         g.setFont(new Font("JetBrains Mono", Font.BOLD, 12));
-        g.drawString("bullets: " + bullets.size(), 10, 50);
-        g.drawString("enemies: " + enemies.size(), 10, 70);
+        g.drawString("objects: " + objects.size(), 10, 50);
+        /*g.drawString("bullets: " + bullets.size(), 10, 50);
+        g.drawString("enemies: " + enemies.size(), 10, 70);*/
         // 恢复现场
         g.setColor(color);
-    }
-
-    private void paintBullets(Graphics g) {
-        // 子弹生命检查
-        bullets.removeIf(bullet -> !bullet.isLive());
-        for (Bullet bullet : bullets) {
-            for (Enemy enemy : enemies) {
-                bullet.collideWithTank(enemy);
-            }
-            // 主战坦克 子弹碰撞
-            bullet.collideWithTank(player);
-            bullet.paint(g);
-        }
-    }
-
-    private void paintExplodes(Graphics g) {
-        explodes.removeIf(explode -> !explode.isLive());
-        for (Explode explode : explodes) {
-            explode.paint(g);
-        }
-    }
-
-    /**
-     * 添加子弹
-     * @param bullet 子弹对象
-     */
-    public void add(Bullet bullet) {
-        this.bullets.add(bullet);
-    }
-
-    /**
-     * 添加爆炸
-     * @param explode 爆炸对象
-     */
-    public void add(Explode explode) {
-        this.explodes.add(explode);
     }
 
     Image offScreenImage = null;
