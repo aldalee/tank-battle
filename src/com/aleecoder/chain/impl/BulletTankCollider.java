@@ -17,7 +17,8 @@ public class BulletTankCollider implements Collider {
             if (!tank.isLive()){
                 return false;
             }
-            bullet.collideWithTank(tank);
+            // TODO: 主坦克不能炸死
+            return bullet.collideWithTank(tank);
         } else if (o1 instanceof Tank && o2 instanceof Bullet) {
             return collide(o2, o1);
         }
